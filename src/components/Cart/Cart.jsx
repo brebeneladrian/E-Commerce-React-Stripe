@@ -5,16 +5,14 @@ import { Link } from 'react-router-dom';
 import CartItem from './CartItem/CartItem';
 import useStyles from './styles';
 
-const Cart = ({ cart, onUpdateCartQty, onRemoveFromCart, onEmptyCart }) => {
+const Cart = ({ cart, handleUpdateCartQty, handleRemoveFormCart, handleEmptyCart }) => {
   const classes = useStyles();
-
-  const handleEmptyCart = () => onEmptyCart();
 
   const renderEmptyCart = () => (
     <Typography variant="subtitle1">You have no items in your shopping cart,
       <Link className={classes.link} to="/">start adding some</Link>!
     </Typography>
-  );
+  );  
 
   if (!cart.line_items) return 'Loading';
 
@@ -23,7 +21,7 @@ const Cart = ({ cart, onUpdateCartQty, onRemoveFromCart, onEmptyCart }) => {
       <Grid container spacing={3}>
         {cart.line_items.map((lineItem) => (
           <Grid item xs={12} sm={4} key={lineItem.id}>
-            <CartItem item={lineItem} onUpdateCartQty={onUpdateCartQty} onRemoveFromCart={onRemoveFromCart} />
+            <CartItem item={lineItem} onUpdateCartQty={handleUpdateCartQty} onRemoveFormCart={handleRemoveFormCart} />
           </Grid>
         ))}
       </Grid>
