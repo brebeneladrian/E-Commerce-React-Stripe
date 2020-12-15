@@ -30,16 +30,21 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
   const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
   useEffect(() => {
-    const generateToken = async () => {
-      try {
-        const token = await commerce.checkout.generateToken(cart.id, {
-          type: "cart",
-        });
-        console.log(token);
-        setCheckoutToken(token);
-      } catch (error) {}
-    };
-    generateToken();
+    if (cart.id) {
+      const generateToken = async () => {
+        try {
+          const token = await commerce.checkout.generateToken(cart.id, {
+            type: "cart",
+          });
+
+          setCheckoutToken(token);
+        } catch {
+          if (activeStep !== steps.length) history.push("/");
+        }
+      };
+
+      generateToken();
+    }
   }, [cart]);
 
   const test = (data) => {
@@ -84,9 +89,20 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
   }
   const Form = () =>
     activeStep === 0 ? (
-      <AddressForm checkoutToken={checkoutToken} />
+      <AddressForm
+        checkoutToken={checkoutToken}
+        nextStep={nextStep}
+        setShippingData={setShippingData}
+        test={test}
+      />
     ) : (
-      <PaymentForm />
+      <PaymentForm
+        checkoutToken={checkoutToken}
+        nextStep={nextStep}
+        backStep={backStep}
+        shippingData={shippingData}
+        onCaptureCheckout={onCaptureCheckout}
+      />
     );
   return (
     <>
